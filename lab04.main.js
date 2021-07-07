@@ -61,14 +61,14 @@ function mainOnObject() {
                 console.log(response);
                 var jsonObject = {}
                 console.log(response.result.number);
-                jsonObject; {
-                    "change_ticket_number"; response.result.number,
-                    "active"; response.result.active,
-                    "priority"; response.result.priority,
-                    "description"; response.result.description,
-                    "work_start"; response.result.work_start,
-                    "work_end"; response.result.work_end,
-                    "change_ticket_key"; response.result.change_ticket_key
+                jsonObject = {
+                    "change_ticket_number": response.result.number,
+                    "active": response.result.active,
+                    "priority": response.result.priority,
+                    "description":response.result.description,
+                    "work_start": response.result.work_start,
+                    "work_end": response.result.work_end,
+                    "change_ticket_key": response.result.change_ticket_key
                 }
                 // console.log(jsonObject)
                 //console.log(jsonObject) = JSON.stringify(data);
