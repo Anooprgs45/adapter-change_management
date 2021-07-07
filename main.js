@@ -26,64 +26,64 @@ const EventEmitter = require('events').EventEmitter;
  */
 class ServiceNowAdapter extends EventEmitter {
 
-    /**
-     * Here we document the ServiceNowAdapter class' callback. It must follow IAP's
-     *   data-first convention.
-     * @callback ServiceNowAdapter~requestCallback
-     * @param {(object|string)} responseData - The entire REST API response.
-     * @param {error} [errorMessage] - An error thrown by REST API call.
-     */
+  /**
+   * Here we document the ServiceNowAdapter class' callback. It must follow IAP's
+   *   data-first convention.
+   * @callback ServiceNowAdapter~requestCallback
+   * @param {(object|string)} responseData - The entire REST API response.
+   * @param {error} [errorMessage] - An error thrown by REST API call.
+   */
 
-    /**
-     * Here we document the adapter properties.
-     * @typedef {object} ServiceNowAdapter~adapterProperties - Adapter
-     *   instance's properties object.
-     * @property {string} url - ServiceNow instance URL.
-     * @property {object} auth - ServiceNow instance credentials.
-     * @property {string} auth.username - Login username.
-     * @property {string} auth.password - Login password.
-     * @property {string} serviceNowTable - The change request table name.
-     */
+  /**
+   * Here we document the adapter properties.
+   * @typedef {object} ServiceNowAdapter~adapterProperties - Adapter
+   *   instance's properties object.
+   * @property {string} url - ServiceNow instance URL.
+   * @property {object} auth - ServiceNow instance credentials.
+   * @property {string} auth.username - Login username.
+   * @property {string} auth.password - Login password.
+   * @property {string} serviceNowTable - The change request table name.
+   */
 
-    /**
-     * @memberof ServiceNowAdapter
-     * @constructs
-     *
-     * @description Instantiates a new instance of the Itential ServiceNow Adapter.
-     * @param {string} id - Adapter instance's ID.
-     * @param {ServiceNowAdapter~adapterProperties} adapterProperties - Adapter instance's properties object.
-     */
-    constructor(id, adapterProperties) {
-        // Call super or parent class' constructor.
-        super();
-        // Copy arguments' values to object properties.
-        this.id = id;
-        this.props = adapterProperties;
-        // Instantiate an object from the connector.js module and assign it to an object property.
-        this.connector = new ServiceNowConnector({
-            url: this.props.url,
-            username: this.props.auth.username,
-            password: this.props.auth.password,
-            serviceNowTable: this.props.serviceNowTable
-        });
-    }
+  /**
+   * @memberof ServiceNowAdapter
+   * @constructs
+   *
+   * @description Instantiates a new instance of the Itential ServiceNow Adapter.
+   * @param {string} id - Adapter instance's ID.
+   * @param {ServiceNowAdapter~adapterProperties} adapterProperties - Adapter instance's properties object.
+   */
+  constructor(id, adapterProperties) {
+    // Call super or parent class' constructor.
+    super();
+    // Copy arguments' values to object properties.
+    this.id = id;
+    this.props = adapterProperties;
+    // Instantiate an object from the connector.js module and assign it to an object property.
+    this.connector = new ServiceNowConnector({
+      url: this.props.url,
+      username: this.props.auth.username,
+      password: this.props.auth.password,
+      serviceNowTable: this.props.serviceNowTable
+    });
+  }
 
-    /**
-     * @memberof ServiceNowAdapter
-     * @method connect
-     * @summary Connect to ServiceNow
-     * @description Complete a single healthcheck and emit ONLINE or OFFLINE.
-     *   IAP calls this method after instantiating an object from the class.
-     *   There is no need for parameters because all connection details
-     *   were passed to the object's constructor and assigned to object property this.props.
-     */
-    connect() {
-        // As a best practice, Itential recommends isolating the health check action
-        // in its own method.
-        this.healthcheck();
-    }
+  /**
+   * @memberof ServiceNowAdapter
+   * @method connect
+   * @summary Connect to ServiceNow
+   * @description Complete a single healthcheck and emit ONLINE or OFFLINE.
+   *   IAP calls this method after instantiating an object from the class.
+   *   There is no need for parameters because all connection details
+   *   were passed to the object's constructor and assigned to object property this.props.
+   */
+  connect() {
+    // As a best practice, Itential recommends isolating the health check action
+    // in its own method.
+    this.healthcheck();
+  }
 
-    /**
+  /**
    * @memberof ServiceNowAdapter
    * @method healthcheck
    * @summary Check ServiceNow Health
@@ -93,82 +93,82 @@ class ServiceNowAdapter extends EventEmitter {
    * @param {ServiceNowAdapter~requestCallback} [callback] - The optional callback
    *   that handles the response.
    */
-    healthcheck(callback) {
-        this.getRecord((result, error) => {
-            /**
-             * For this lab, complete the if else conditional
-             * statements that check if an error exists
-             * or the instance was hibernating. You must write
-             * the blocks for each branch.
-             */
-            if (error) {
-                this.emitOffline();
-                log.error('id: this.id');
-            } else {
-                this.emitOnline();
-                log.debug('ServiceNow: Instance is available.');
-            }
-        });
+  healthcheck(callback) {
+    // We will build this method in a later lab. For now, it will emulate
+    // a healthy integration by emmitting ONLINE.
+    this.emitOnline();
+  }
 
-    }
+  /**
+   * @memberof ServiceNowAdapter
+   * @method emitOffline
+   * @summary Emit OFFLINE
+   * @description Emits an OFFLINE event to IAP indicating the external
+   *   system is not available.
+   */
+  emitOffline() {
+    this.emitStatus('OFFLINE');
+    log.warn('ServiceNow: Instance is unavailable.');
+  }
 
-    /**
-     * @memberof ServiceNowAdapter
-     * @method emitOffline
-     * @summary Emit OFFLINE
-     * @description Emits an OFFLINE event to IAP indicating the external
-     *   system is not available.
-     */
-    emitOffline() {
-        this.emitStatus('OFFLINE');
-        log.warn('ServiceNow: Instance is unavailable.');
-    }
+  /**
+   * @memberof ServiceNowAdapter
+   * @method emitOnline
+   * @summary Emit ONLINE
+   * @description Emits an ONLINE event to IAP indicating external
+   *   system is available.
+   */
+  emitOnline() {
+    this.emitStatus('ONLINE');
+    log.info('ServiceNow: Instance is available.');
+  }
 
-    /**
-     * @memberof ServiceNowAdapter
-     * @method emitOnline
-     * @summary Emit ONLINE
-     * @description Emits an ONLINE event to IAP indicating external
-     *   system is available.
-     */
-    emitOnline() {
-        this.emitStatus('ONLINE');
-        log.info('ServiceNow: Instance is available.');
-    }
+  /**
+   * @memberof ServiceNowAdapter
+   * @method emitStatus
+   * @summary Emit an Event
+   * @description Calls inherited emit method. IAP requires the event
+   *   and an object identifying the adapter instance.
+   *
+   * @param {string} status - The event to emit.
+   */
+  emitStatus(status) {
+    this.emit(status, { id: this.id });
+  }
 
-    /**
-     * @memberof ServiceNowAdapter
-     * @method emitStatus
-     * @summary Emit an Event
-     * @description Calls inherited emit method. IAP requires the event
-     *   and an object identifying the adapter instance.
-     *
-     * @param {string} status - The event to emit.
-     */
-    emitStatus(status) {
-        this.emit(status, { id: this.id });
-    }
-
-    /**
-     * @memberof ServiceNowAdapter
-     * @method getRecord
-     * @summary Get ServiceNow Record
-     * @description Retrieves a record from ServiceNow.
-     *
-     * @param {ServiceNowAdapter~requestCallback} callback - The callback that
-     *   handles the response.
-     */
+  /**
+   * @memberof ServiceNowAdapter
+   * @method getRecord
+   * @summary Get ServiceNow Record
+   * @description Retrieves a record from ServiceNow.
+   *
+   * @param {ServiceNowAdapter~requestCallback} callback - The callback that
+   *   handles the response.
+   */
     getRecord(callback) {
+        this.connector.get((data, error) => {
+                 if (data.body) {
+                var response = JSON.parse(data.body);
+                console.log("response: " , response);
+                var jsonArray = []
+                for (let i = 0; i < response.result.length; i++) {
+                    console.log(response.result[i].number);
+                    jsonArray.push({
+                        "change_ticket_number": response.result[i].number,
+                        "active": response.result[i].active,
+                        "priority": response.result[i].priority,
+                        "description": response.result[i].description,
+                        "work_start": response.result[i].work_start,
+                        "work_end": response.result[i].work_end,
+                        "change_ticket_key": response.result[i].change_ticket_key
+                    })
+                }
+                // return jsonArray
+                console.log("my jsonArray: ", jsonArray)
+            }
+        }
+}
 
-        /**
-         * Write the body for this function.
-         * The function is a wrapper for this.connector's get() method.
-         * Note how the object was instantiated in the constructor().
-         * get() takes a callback function.
-         */
-        this.connector.get(callback)
-
-    }
 
     /**
      * @memberof ServiceNowAdapter
@@ -180,14 +180,28 @@ class ServiceNowAdapter extends EventEmitter {
      *   handles the response.
      */
     postRecord(callback) {
-        /**
-         * Write the body for this function.
-         * The function is a wrapper for this.connector's post() method.
-         * Note how the object was instantiated in the constructor().
-         * post() takes a callback function.
-         */
-        this.connector.post(callback)
+        this.connector.post((data, error) => {
+           if (data.body) {
+                var response = JSON.parse(data.body);
+                console.log(response);
+                var jsonObject = {}
+                console.log(response.result.number);
+                jsonObject; {
+                    "change_ticket_number"; response.result.number,
+                    "active"; response.result.active,
+                    "priority"; response.result.priority,
+                    "description"; response.result.description,
+                    "work_start"; response.result.work_start,
+                    "work_end"; response.result.work_end,
+                    "change_ticket_key"; response.result.change_ticket_key
+                }
+                // console.log(jsonObject)
+                //console.log(jsonObject) = JSON.stringify(data);
+                // return jsonObject
+                console.log(jsonObject)
+            }
+        })
     }
-}
+
 
 module.exports = ServiceNowAdapter;

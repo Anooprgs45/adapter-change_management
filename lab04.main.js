@@ -32,13 +32,51 @@ function mainOnObject() {
         if (error) {
             console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
         }
-        console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
+        if (data.body) {
+                var response = JSON.parse(data.body);
+                console.log("response: " , response);
+                var jsonArray = []
+                for (let i = 0; i < response.result.length; i++) {
+                    console.log(response.result[i].number);
+                    jsonArray.push({
+                        "change_ticket_number": response.result[i].number,
+                        "active": response.result[i].active,
+                        "priority": response.result[i].priority,
+                        "description": response.result[i].description,
+                        "work_start": response.result[i].work_start,
+                        "work_end": response.result[i].work_end,
+                        "change_ticket_key": response.result[i].change_ticket_key
+                    })
+                }
+                // return jsonArray
+                console.log("my jsonArray: ", jsonArray)
+            }
     });
     connector.post((data, error) => {
         if (error) {
             console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
         }
-        console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
+              if (data.body) {
+                var response = JSON.parse(data.body);
+                console.log(response);
+                var jsonObject = {}
+                console.log(response.result.number);
+                jsonObject; {
+                    "change_ticket_number"; response.result.number,
+                    "active"; response.result.active,
+                    "priority"; response.result.priority,
+                    "description"; response.result.description,
+                    "work_start"; response.result.work_start,
+                    "work_end"; response.result.work_end,
+                    "change_ticket_key"; response.result.change_ticket_key
+                }
+                // console.log(jsonObject)
+                //console.log(jsonObject) = JSON.stringify(data);
+                // return jsonObject
+                console.log(jsonObject)
+            }
+
+        // console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
     });
 
 }
